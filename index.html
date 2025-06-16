@@ -1,0 +1,489 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MILANO Cafe - Sizning Sevimli Restoraningiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Menyu gridini to'g'rilash uchun qo'shimcha CSS */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">MILANO Cafe</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#home" class="text-gray-600 hover:text-gray-800">Bosh sahifa</a></li>
+                    <li><a href="#menu" class="text-gray-600 hover:text-gray-800">Menyu</a></li>
+                    <li><a href="#contact" class="text-gray-600 hover:text-gray-800">Aloqa</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-cover bg-center h-96" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop')">
+        <div class="container mx-auto px-4 h-full flex items-center">
+            <div class="text-white bg-black bg-opacity-50 p-6 rounded">
+                <h2 class="text-4xl font-bold mb-4">MILANO Cafega Xush Kelibsiz!</h2>
+                <p class="text-lg">Eng mazali taomlar va ajoyib muhit sizni kutmoqda.</p>
+                <a href="#menu" class="mt-4 inline-block bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600">Menyuni Ko‘rish</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menyu Section -->
+    <section id="menu" class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Bizning Menyu</h2>
+            <div class="menu-grid">
+                <!-- Taom 1 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Palov" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Palov</h3>
+                    <p class="text-gray-600">An'anaviy o‘zbek palovi, guruch, go‘sht va sabzavotlar bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">20,000 UZS</p>
+                </div>
+                <!-- Taom 2 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Shashlik" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Shashlik</h3>
+                    <p class="text-gray-600">Suvli go‘shtdan tayyorlangan shashlik, grilda pishirilgan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 3 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Lag‘mon" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Lag‘mon</h3>
+                    <p class="text-gray-600">Uy sharoitida tayyorlangan lag‘mon, yangi sabzavotlar bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 4 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Somsa" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Somsa</h3>
+                    <p class="text-gray-600">Go‘sht va piyoz bilan to‘ldirilgan tandir somsa.</p>
+                    <p class="text-yellow-500 font-bold mt-2">5,000 UZS</p>
+                </div>
+                <!-- Taom 5 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Manti" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Manti</h3>
+                    <p class="text-gray-600">Qiyma go‘sht bilan bug‘da pishirilgan manti.</p>
+                    <p class="text-yellow-500 font-bold mt-2">8,000 UZS</p>
+                </div>
+                <!-- Taom 6 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Norin" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Norin</h3>
+                    <p class="text-gray-600">An’anaviy xorezm norini, ot go‘shti va uy qoldirilgan noodle bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 7 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qozon Kabob" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qozon Kabob</h3>
+                    <p class="text-gray-600">Go‘sht va kartoshka bilan qozonda tayyorlangan kabob.</p>
+                    <p class="text-yellow-500 font-bold mt-2">18,000 UZS</p>
+                </div>
+                <!-- Taom 8 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Chuchvara" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Chuchvara</h3>
+                    <p class="text-gray-600">Go‘shtli chuchvara, issiq sho‘rva bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 9 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Dimlama" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Dimlama</h3>
+                    <p class="text-gray-600">Turli sabzavotlar va go‘sht bilan pishirilgan dimlama.</p>
+                    <p class="text-yellow-500 font-bold mt-2">14,000 UZS</p>
+                </div>
+                <!-- Taom 10 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Jiz-biz" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Jiz-biz</h3>
+                    <p class="text-gray-600">Qovurilgan jigar va sabzavotlar.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 11 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Pizza Margherita" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Pizza Margherita</h3>
+                    <p class="text-gray-600">Pishloq, pomidor sousi va reyhan bilan klassik pizza.</p>
+                    <p class="text-yellow-500 font-bold mt-2">25,000 UZS</p>
+                </div>
+                <!-- Taom 12 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Burger" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Burger</h3>
+                    <p class="text-gray-600">Mol go‘shti, pishloq, salat va pomidor bilan burger.</p>
+                    <p class="text-yellow-500 font-bold mt-2">18,000 UZS</p>
+                </div>
+                <!-- Taom 13 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Sezar Salati" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Sezar Salati</h3>
+                    <p class="text-gray-600">Tovuq, salat, pishloq va sezar sousi bilan salat.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 14 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Pasta Carbonara" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Pasta Carbonara</h3>
+                    <p class="text-gray-600">Bekon, tuxum va pishloq sousi bilan pasta.</p>
+                    <p class="text-yellow-500 font-bold mt-2">20,000 UZS</p>
+                </div>
+                <!-- Taom 15 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Sushi Roll" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Sushi Roll</h3>
+                    <p class="text-gray-600">Salmon, avokado va guruch bilan tayyorlangan sushi.</p>
+                    <p class="text-yellow-500 font-bold mt-2">30,000 UZS</p>
+                </div>
+                <!-- Taom 16 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Kebab" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Kebab</h3>
+                    <p class="text-gray-600">Grillda pishirilgan mol go‘shti kebab, lavashda.</p>
+                    <p class="text-yellow-500 font-bold mt-2">14,000 UZS</p>
+                </div>
+                <!-- Taom 17 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Steak" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Steak</h3>
+                    <p class="text-gray-600">O‘rta pishirilgan mol go‘shti steak, sos bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">35,000 UZS</p>
+                </div>
+                <!-- Taom 18 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qovurma Lag‘mon" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qovurma Lag‘mon</h3>
+                    <p class="text-gray-600">Go‘sht, sabzavotlar va qovurilgan noodle bilan lag‘mon.</p>
+                    <p class="text-yellow-500 font-bold mt-2">13,000 UZS</p>
+                </div>
+                <!-- Taom 19 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Tandir Go‘sht" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Tandir Go‘sht</h3>
+                    <p class="text-gray-600">Tandirda pishirilgan suvli qo‘y go‘shti.</p>
+                    <p class="text-yellow-500 font-bold mt-2">25,000 UZS</p>
+                </div>
+                <!-- Taom 20 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Sho‘rva" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Sho‘rva</h3>
+                    <p class="text-gray-600">Go‘sht va sabzavotlar bilan an’anaviy sho‘rva.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 21 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Mastava" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Mastava</h3>
+                    <p class="text-gray-600">Guruch va go‘sht bilan tayyorlangan sho‘rva.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 22 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Non Kabob" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Non Kabob</h3>
+                    <p class="text-gray-600">Qiyma go‘sht va non bilan tayyorlangan kabob.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 23 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qaymoq" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qaymoq</h3>
+                    <p class="text-gray-600">Uy sharoitida tayyorlangan qaymoq, non bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">5,000 UZS</p>
+                </div>
+                <!-- Taom 24 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Olivye Salati" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Olivye Salati</h3>
+                    <p class="text-gray-600">Kartoshka, tuxum va kolbasa bilan klassik salat.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 25 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Grecheskiy Salat" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Grecheskiy Salat</h3>
+                    <p class="text-gray-600">Pishloq, pomidor va zaytun bilan yunon salati.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 26 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Doner" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Doner</h3>
+                    <p class="text-gray-600">Tovuq yoki mol go‘shti bilan lavashda doner.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 27 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Hot Dog" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Hot Dog</h3>
+                    <p class="text-gray-600">Kolbasa, sous va non bilan hot dog.</p>
+                    <p class="text-yellow-500 font-bold mt-2">8,000 UZS</p>
+                </div>
+                <!-- Taom 28 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="French Fries" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">French Fries</h3>
+                    <p class="text-gray-600">Qovurilgan kartoshka fri, sous bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">7,000 UZS</p>
+                </div>
+                <!-- Taom 29 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qovurdoq" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qovurdoq</h3>
+                    <p class="text-gray-600">Go‘sht va sabzavotlar bilan qovurilgan taom.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 30 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Tovuq Kabob" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Tovuq Kabob</h3>
+                    <p class="text-gray-600">Tovuq go‘shtidan tayyorlangan suvli kabob.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 31 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Baliq Kabob" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Baliq Kabob</h3>
+                    <p class="text-gray-600">Grilda pishirilgan baliq kabob.</p>
+                    <p class="text-yellow-500 font-bold mt-2">18,000 UZS</p>
+                </div>
+                <!-- Taom 32 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qaynatma" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qaynatma</h3>
+                    <p class="text-gray-600">Go‘sht va sabzavotlar bilan qaynatilgan taom.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 33 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qovurilgan Baliq" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qovurilgan Baliq</h3>
+                    <p class="text-gray-600">Qovurilgan baliq, garnir bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">20,000 UZS</p>
+                </div>
+                <!-- Taom 34 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Pizza Pepperoni" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Pizza Pepperoni</h3>
+                    <p class="text-gray-600">Pepperoni, pishloq va pomidor sousi bilan pizza.</p>
+                    <p class="text-yellow-500 font-bold mt-2">28,000 UZS</p>
+                </div>
+                <!-- Taom 35 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Tiramisu" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Tiramisu</h3>
+                    <p class="text-gray-600">Klassik italyan deserti, kofe va mascarpone bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 36 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Cheesecake" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Cheesecake</h3>
+                    <p class="text-gray-600">Krem pishloq va meva sousi bilan cheesecake.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 37 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Paxlava" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Paxlava</h3>
+                    <p class="text-gray-600">Yong‘oq va shirin sirop bilan paxlava.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 38 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Chak-chak" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Chak-chak</h3>
+                    <p class="text-gray-600">Asal va qovurilgan xamir bilan chak-chak.</p>
+                    <p class="text-yellow-500 font-bold mt-2">8,000 UZS</p>
+                </div>
+                <!-- Taom 39 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Sutli Kokteyl" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Sutli Kokteyl</h3>
+                    <p class="text-gray-600">Muzqaymoq va sut bilan tayyorlangan kokteyl.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 40 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Meyvali Salat" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Meyvali Salat</h3>
+                    <p class="text-gray-600">Yangi mevalar va qaymoq bilan salat.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 41 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Krem Sho‘rva" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Krem Sho‘rva</h3>
+                    <p class="text-gray-600">Qaymoqli qo‘ziqorin sho‘rvasi.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 42 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Pomidor Sho‘rva" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Pomidor Sho‘rva</h3>
+                    <p class="text-gray-600">Yangi pomidor va reyhan bilan sho‘rva.</p>
+                    <p class="text-yellow-500 font-bold mt-2">8,000 UZS</p>
+                </div>
+                <!-- Taom 43 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qovurilgan Tovuq" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qovurilgan Tovuq</h3>
+                    <p class="text-gray-600">Tovuq, ziravorlar va garnir bilan qovurilgan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">15,000 UZS</p>
+                </div>
+                <!-- Taom 44 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Tovuq Salati" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Tovuq Salati</h3>
+                    <p class="text-gray-600">Tovuq, sabzavotlar va mayonez bilan salat.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 45 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qovoq Sho‘rva" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qovoq Sho‘rva</h3>
+                    <p class="text-gray-600">Qaymoqli qovoq sho‘rvasi.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 46 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Qozon Bosh" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Qozon Bosh</h3>
+                    <p class="text-gray-600">Qo‘y boshi, qozonda pishirilgan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">30,000 UZS</p>
+                </div>
+                <!-- Taom 47 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Lavash" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Lavash</h3>
+                    <p class="text-gray-600">Go‘sht, sabzavotlar va sous bilan lavash.</p>
+                    <p class="text-yellow-500 font-bold mt-2">12,000 UZS</p>
+                </div>
+                <!-- Taom 48 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Pishloqli Non" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Pishloqli Non</h3>
+                    <p class="text-gray-600">Pishloq va sarimsoq bilan pishirilgan non.</p>
+                    <p class="text-yellow-500 font-bold mt-2">8,000 UZS</p>
+                </div>
+                <!-- Taom 49 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Muzqaymoq" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Muzqaymoq</h3>
+                    <p class="text-gray-600">Vanilli yoki shokoladli muzqaymoq.</p>
+                    <p class="text-yellow-500 font-bold mt-2">7,000 UZS</p>
+                </div>
+                <!-- Taom 50 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Kofe Latte" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Kofe Latte</h3>
+                    <p class="text-gray-600">Espresso va sut bilan tayyorlangan latte.</p>
+                    <p class="text-yellow-500 font-bold mt-2">10,000 UZS</p>
+                </div>
+                <!-- Taom 51 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <img src="images/food.jpg" alt="Choy" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-xl font-semibold">Choy</h3>
+                    <p class="text-gray-600">Yashil yoki qora choy, limon bilan.</p>
+                    <p class="text-yellow-500 font-bold mt-2">5,000 UZS</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aloqa Section -->
+    <section id="contact" class="bg-gray-200 py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Biz bilan Bog‘laning</h2>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2">
+                    <p class="text-lg text-gray-600 mb-4">Manzil: MILANO Cafe, Jizzah viloyati, Zomin tumani </p>
+                    <p class="text-lg text-gray-600 mb-4 flex items-center">
+                        <img src="https://img.icons8.com/color/48/000000/phone.png" alt="Phone Icon" class="w-6 h-6 mr-2">
+                        Telefon: <a href="tel:+998771839999" class="text-blue-500 hover:underline">+998771839999</a>
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4 flex items-center">
+                        <img src="https://img.icons8.com/color/48/000000/instagram-new--v1.png" alt="Instagram Icon" class="w-6 h-6 mr-2">
+                        Instagram: <a href="https://instagram.com/milano_kafe" class="text-blue-500 hover:underline">@milano_kafe</a>
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4 flex items-center">
+                        <img src="https://img.icons8.com/color/48/000000/telegram-app.png" alt="Telegram Icon" class="w-6 h-6 mr-2">
+                        Telegram: <a href="https://t.me/milano_kafe" class="text-blue-500 hover:underline">@milano_kafe</a>
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">Ish vaqti: Har kuni 8:00 - 22:00</p>
+                </div>
+                <div class="md:w-1/2">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3047.987074836013!2d68.395359!3d39.9654992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38b24f0050e3bc17%3A0x508f424ebc3d806d!2sMILANO%20KAFE!5e0!3m2!1sen!2suz!4v1697056789123!5m2!1sen!2suz" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2025 MILANO Cafe. Barcha huquqlar himoyalangan.</p>
+            <div class="mt-4">
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Facebook</a>
+                <a href="https://instagram.com/milano_kafe" class="text-gray-400 hover:text-white mx-2">Instagram</a>
+                <a href="https://t.me/kafe_milano" class="text-gray-400 hover:text-white mx-2">Telegram</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
